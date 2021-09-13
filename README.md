@@ -104,6 +104,10 @@ OPTIONS
                                binaries should be uploaded. Should always begin with
                                /content/dam.
 
+  -d, --deep=[true|false]     [default: false] Whether to perform a deep upload,
+                               e.g. to recurssively upload all files and folders 
+                               underneath the target folder.
+
   -v, --version                Show version
 
   --help                       Show help

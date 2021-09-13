@@ -19,3 +19,7 @@ afterAll(() => stdout.stop())
 test('exports', async () => {
   expect(typeof UploadCommand.upload).toEqual('function')
 })
+
+test('deep', async () => {
+  expect(UploadCommand.upload.flags.deep.char).toEqual('d')
+})
