@@ -17,7 +17,7 @@ const mustache = require('mustache');
 
 const {flags} = require('@oclif/command');
 const {
-    DirectBinaryUploadOptions,
+    FileSystemUploadOptions,
     FileSystemUpload,
 } = require('@adobe/aem-upload');
 
@@ -62,11 +62,13 @@ class UploadCommand extends BaseCommand {
             log: logFile,
             output: htmlResult,
             threads,
+            deep,
         } = newFlags;
 
-        const uploadOptions = new DirectBinaryUploadOptions()
+        const uploadOptions = new FileSystemUploadOptions()
             .withUrl(`${trimRight(host, ['/'])}${target}`)
             .withBasicAuth(credential)
+            .withDeepUpload(deep)
             .withMaxConcurrent(parseInt(threads, 10));
 
         // setup logger
@@ -134,6 +136,12 @@ saved in html format.`,
         description: `Maximum threads
 Maximum number of files to upload concurrently.`,
         default: 5,
+    }),
+    deep: flags.boolean({
+        char: 'd',
+        description: `Whether or not to perform 
+        a deep upload`,
+        default: false,
     })
 })
 
