@@ -58,6 +58,7 @@ class UploadCommand extends BaseCommand {
         const {
             host,
             credential,
+            access_token,
             target,
             log: logFile,
             output: htmlResult,
@@ -66,11 +67,22 @@ class UploadCommand extends BaseCommand {
         } = newFlags;
 
         const uploadOptions = new FileSystemUploadOptions()
-            .withUrl(`${trimRight(host, ['/'])}${target}`)
-            .withBasicAuth(credential)
             .withDeepUpload(deep)
-            .withMaxConcurrent(parseInt(threads, 10));
-
+            .withMaxConcurrent(parseInt(threads, 10))
+        
+        if (access_token) {
+            uploadOptions
+                .withHeaders({
+                    'Authorization': `Bearer ${access_token}`
+                })
+                .withUrl(`${trimRight(host, ['/'])}${target}?configid=ims`);
+        }
+        else {
+            uploadOptions
+                .withBasicAuth(credential)
+                .withUrl(`${trimRight(host, ['/'])}${target}`)
+        }
+        
         // setup logger
         const log = getLogger(logFile);
 
@@ -94,6 +106,7 @@ class UploadCommand extends BaseCommand {
 
 UploadCommand.flags = Object.assign({}, BaseCommand.flags, {
     host: flags.string({
+        env: 'AEM_HOST',
         char: 'h',
         description: `AEM host
 The host value of the AEM instance where files will be
@@ -108,6 +121,12 @@ The username and password for authenticating with the
 target AEM instance. Should be in the format
 <username>:<password>.`,
         default: 'admin:admin'
+    }),
+    access_token: flags.string({
+        env: 'AEM_ACCESS_TOKEN',
+        char: 'a',
+        description: `User or service account access token
+For authenticating with the target AEM instance.`
     }),
     target: flags.string({
         char: 't',
@@ -139,7 +158,7 @@ Maximum number of files to upload concurrently.`,
     }),
     deep: flags.boolean({
         char: 'd',
-        description: `Whether or not to perform 
+        description: `Whether or not to perform
         a deep upload`,
         default: false,
     })
@@ -159,14 +178,12 @@ direct binary access algorithm, so the target instance must have direct binary
 access enabled; otherwise the upload will fail.
 
 The process will upload the files or directories (non-recursive) provided in
-the command.
-
-Note that the process will only work with AEM instances that use basic
-(i.e. non-SSO) authentication.`
+the command.`
 
 UploadCommand.examples = [
     '$ aio aem:upload myimage.jpg',
-    '$ aio aem:upload -h http://myaeminstance -c admin:12345 myimage.jpg ',
+    '$ aio aem:upload -h http://myaeminstance -c admin:12345 myimage.jpg',
+    '$ aio aem:upload -h http://myaeminstance -a myaccesstoken -t /content/dam/myassets myimage.jpg',
 ]
 
 module.exports = {
