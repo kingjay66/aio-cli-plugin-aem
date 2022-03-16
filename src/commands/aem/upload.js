@@ -58,7 +58,7 @@ class UploadCommand extends BaseCommand {
         const {
             host,
             credential,
-            access_token,
+            ims_token,
             target,
             log: logFile,
             output: htmlResult,
@@ -70,10 +70,10 @@ class UploadCommand extends BaseCommand {
             .withDeepUpload(deep)
             .withMaxConcurrent(parseInt(threads, 10))
         
-        if (access_token) {
+        if (ims_token) {
             uploadOptions
                 .withHeaders({
-                    'Authorization': `Bearer ${access_token}`
+                    'Authorization': `Bearer ${ims_token}`
                 })
                 .withUrl(`${trimRight(host, ['/'])}${target}?configid=ims`);
         }
@@ -122,10 +122,10 @@ target AEM instance. Should be in the format
 <username>:<password>.`,
         default: 'admin:admin'
     }),
-    access_token: flags.string({
-        env: 'AEM_ACCESS_TOKEN',
-        char: 'a',
-        description: `User or service account access token
+    ims_token: flags.string({
+        env: 'IMS_TOKEN',
+        char: 'i',
+        description: `User or service account IMS access token
 For authenticating with the target AEM instance.`
     }),
     target: flags.string({
@@ -183,7 +183,7 @@ the command.`
 UploadCommand.examples = [
     '$ aio aem:upload myimage.jpg',
     '$ aio aem:upload -h http://myaeminstance -c admin:12345 myimage.jpg',
-    '$ aio aem:upload -h http://myaeminstance -a myaccesstoken -t /content/dam/myassets myimage.jpg',
+    '$ aio aem:upload -h http://myaeminstance -i myimstoken -t /content/dam/myassets myimage.jpg',
 ]
 
 module.exports = {
