@@ -12,6 +12,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1.14.0",
     "@oclif/errors": "^1.1.2",
+    "axios": "^0.26.1",
     "debug": "^4.1.0",
     "mustache": "^3.2.1",
     "winston": "^3.2.1"
@@ -36,6 +37,9 @@
     "jest-junit": "^6.0.0",
     "jest-resolve": "^24.5.0",
     "stdout-stderr": "^0.1.13"
+  },
+  "peerDependencies": {
+    "@adobe/aio-cli-plugin-app": "^8.5.1"
   },
   "engines": {
     "node": ">=10.0.0"

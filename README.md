@@ -19,7 +19,7 @@ $ npm install -g @adobe/aio-cli-plugin-aem
 $ aio-aem COMMAND
 running command...
 $ aio-aem (-v|--version|version)
-@adobe/aio-cli-plugin-aem/1.0.4 darwin-x64 node-v10.16.3
+@adobe/aio-cli-plugin-aem/1.0.5 darwin-x64 node-v16.14.0
 $ aio-aem --help [COMMAND]
 USAGE
   $ aio-aem COMMAND
@@ -64,7 +64,48 @@ aio-aem aem:COMMAND
 
 # Commands
 <!-- commands -->
+* [`aio-aem aem:spa:set-root ROOT_PAGE`](#aio-aem-aemspaset-root-root_page)
 * [`aio-aem aem:upload FILES_FOLDERS`](#aio-aem-aemupload-files_folders)
+
+## `aio-aem aem:spa:set-root ROOT_PAGE`
+
+Configuration for AEM SPA Projects
+
+```
+USAGE
+  $ aio-aem aem:spa:set-root ROOT_PAGE
+
+ARGUMENTS
+  ROOT_PAGE  Path to the root page of your AEM project.
+
+OPTIONS
+  -h, --host=host              [default: http://localhost:4502] AEM hostname
+  -p, --pass=pass              [default: admin] AEM password
+  -s, --spaVersion=spaVersion  [default: 1.5] Version of the SPA editor. Supported values are: 1.5 and 2.0
+  -u, --user=user              [default: admin] AEM username
+  -v, --version                Show version
+  --help                       Show help
+
+DESCRIPTION
+  Updates the remote SPA configuration property of your AEM project to the 
+  location your SPA is deployed to. This will only work if you used aio to 
+  bootstrap and deploy your SPA.
+
+  Please also specify the version of the SPA / Universal Editor your project is using.
+  The version can be derived from the main page component you are using.
+
+  spa-project-core/components/remotepagenext -> Version 1.5
+  spa-project-core/components/page -> Version 2.0
+
+ALIASES
+  $ aio-aem aem:spa:set-root
+
+EXAMPLES
+  $ aio aem:spa-set-root -s 1.5 /content/wknd/us/en
+  $ aio aem:spa-set-root -u admin -p admin -h http://localhost:4502 -s 2.0 /content/wknd/us/en
+```
+
+_See code: [src/commands/aem/spa/set-root.js](https://github.com/adobe/aio-cli-plugin-aem/blob/v1.0.5/src/commands/aem/spa/set-root.js)_
 
 ## `aio-aem aem:upload FILES_FOLDERS`
 
@@ -82,6 +123,9 @@ OPTIONS
                                The username and password for authenticating with the
                                target AEM instance. Should be in the format
                                <username>:<password>.
+
+  -d, --deep                   Whether or not to perform
+                               a deep upload
 
   -h, --host=host              [default: http://localhost:4502] AEM host
                                The host value of the AEM instance where files will be
@@ -104,10 +148,6 @@ OPTIONS
                                binaries should be uploaded. Should always begin with
                                /content/dam.
 
-  -d, --deep=[true|false]     [default: false] Whether to perform a deep upload,
-                               e.g. to recurssively upload all files and folders 
-                               underneath the target folder.
-
   -v, --version                Show version
 
   --help                       Show help
@@ -128,7 +168,7 @@ EXAMPLES
   $ aio aem:upload -h http://myaeminstance -c admin:12345 myimage.jpg
 ```
 
-_See code: [src/commands/aem/upload.js](https://github.com/adobe/aio-cli-plugin-aem/blob/v1.0.4/src/commands/aem/upload.js)_
+_See code: [src/commands/aem/upload.js](https://github.com/adobe/aio-cli-plugin-aem/blob/v1.0.5/src/commands/aem/upload.js)_
 <!-- commandsstop -->
 
 # Contributing
