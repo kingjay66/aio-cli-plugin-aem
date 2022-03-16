@@ -1,15 +1,15 @@
 /**
- * For 1.5 
+ * For 1.5
  * ./remoteSPAUrl
  * spa-project-core/components/remotepagenext
- * 
+ *
  * For 2.0
  * ./remoteURL: "https://cezcz.github.io/spa-sample-app/"
  * spa-project-core/components/page
  */
 
+require('dotenv').config();
 const { flags } = require('@oclif/command');
-const GetUrlCommand = require('@adobe/aio-cli-plugin-app/src/commands/app/get-url');
 const axios = require('axios').default;
 
 const BaseCommand = require("../../../base-command");
@@ -22,8 +22,7 @@ class SetRootCommand extends BaseCommand {
         const ROOT_PATH = argv[0];
 
         // Get application url
-        const actions = await GetUrlCommand.run([]);
-        const url = actions.runtime.pages;
+        const url = `https://${process.env.AIO_runtime_namespace}.adobeio-static.net/api/v1/web/actions/pages`;
         this.log(`Deployed application is located at ${url}.`);
 
         // Define form payload based on SPA editor version
@@ -105,8 +104,8 @@ SetRootCommand.strict = false;
 
 SetRootCommand.description = `Configuration for AEM SPA Projects
 
-Updates the remote SPA configuration property of your AEM project to the 
-location your SPA is deployed to. This will only work if you used aio to 
+Updates the remote SPA configuration property of your AEM project to the
+location your SPA is deployed to. This will only work if you used aio to
 bootstrap and deploy your SPA.
 
 Authentication to AEM can be done either via IMS or username and password. Either
