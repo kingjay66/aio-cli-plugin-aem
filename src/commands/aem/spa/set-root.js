@@ -17,7 +17,8 @@ const BaseCommand = require("../../../base-command");
 class SetRootCommand extends BaseCommand {
     async doRun(args) {
         const { flags, argv } = args;
-        const { host, user, pass, spaVersion } = flags;
+
+        const { host, user, imsToken, pass, spaVersion } = flags;
         const ROOT_PATH = argv[0];
 
         // Get application url
@@ -33,19 +34,30 @@ class SetRootCommand extends BaseCommand {
             params.append('./remoteSPAUrl', url);
         }
 
-        // Update property on AEM root page
-        const response = await axios({
+        const axiosOptions = {
             method: 'POST',
             url: `${host}${ROOT_PATH}/_jcr_content`,
             headers: {
                 'content-type': 'application/x-www-form-urlencoded'
             },
             data: params.toString(),
-            auth: {
+        };
+
+        // Apply AEM authentication
+        if (imsToken) {
+            this.log('Login via IMS');
+            axiosOptions.url = axiosOptions.url + '?configid=ims';
+            axiosOptions.headers['authorization'] = `Bearer ${imsToken}`;
+        } else {
+            this.log(`Login as local user ${user}.`);
+            axiosOptions.auth = {
                 username: user,
                 password: pass
             }
-        });
+        }
+
+        // Update property on AEM root page
+        const response = await axios(axiosOptions);
 
         if (response.status !== 200) {
             this.error('There was an error when updating the AEM page.');
@@ -63,13 +75,18 @@ SetRootCommand.flags = Object.assign({}, BaseCommand.flags, {
     }),
     user: flags.string({
         char: 'u',
-        description: 'AEM username',
+        description: 'AEM username. Please provide either username and password or an IMS token.',
         default: 'admin'
     }),
     pass: flags.string({
         char: 'p',
         description: 'AEM password',
         default: 'admin'
+    }),
+    imsToken: flags.string({
+        char: 'i',
+        description: 'IMS Token. Please provide either username and password or an IMS token.',
+        env: 'IMS_TOKEN'
     }),
     spaVersion: flags.string({
         char: 's',
@@ -92,6 +109,9 @@ Updates the remote SPA configuration property of your AEM project to the
 location your SPA is deployed to. This will only work if you used aio to 
 bootstrap and deploy your SPA.
 
+Authentication to AEM can be done either via IMS or username and password. Either
+provide the values as flags or use the IMS_TOKEN environment variable.
+
 Please also specify the version of the SPA / Universal Editor your project is using.
 The version can be derived from the main page component you are using.
 
@@ -100,7 +120,8 @@ spa-project-core/components/page -> Version 2.0`;
 
 SetRootCommand.examples = [
     '$ aio aem:spa-set-root -s 1.5 /content/wknd/us/en',
-    '$ aio aem:spa-set-root -u admin -p admin -h http://localhost:4502 -s 2.0 /content/wknd/us/en'
+    '$ aio aem:spa-set-root -u admin -p admin -h http://localhost:4502 -s 2.0 /content/wknd/us/en',
+    '$ aio aem:spa-set-root -i IMS_TOKEN -h https://author.adobeaemcloud.com/ /content/wknd/us/en'
 ];
 
 SetRootCommand.aliases = [

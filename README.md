@@ -80,16 +80,24 @@ ARGUMENTS
 
 OPTIONS
   -h, --host=host              [default: http://localhost:4502] AEM hostname
+  -i, --imsToken=imsToken      IMS Token. Please provide either username and password or an IMS token.
   -p, --pass=pass              [default: admin] AEM password
   -s, --spaVersion=spaVersion  [default: 1.5] Version of the SPA editor. Supported values are: 1.5 and 2.0
-  -u, --user=user              [default: admin] AEM username
+
+  -u, --user=user              [default: admin] AEM username. Please provide either username and password or an IMS
+                               token.
+
   -v, --version                Show version
+
   --help                       Show help
 
 DESCRIPTION
   Updates the remote SPA configuration property of your AEM project to the 
   location your SPA is deployed to. This will only work if you used aio to 
   bootstrap and deploy your SPA.
+
+  Authentication to AEM can be done either via IMS or username and password. Either
+  provide the values as flags or use the IMS_TOKEN environment variable.
 
   Please also specify the version of the SPA / Universal Editor your project is using.
   The version can be derived from the main page component you are using.
@@ -103,6 +111,7 @@ ALIASES
 EXAMPLES
   $ aio aem:spa-set-root -s 1.5 /content/wknd/us/en
   $ aio aem:spa-set-root -u admin -p admin -h http://localhost:4502 -s 2.0 /content/wknd/us/en
+  $ aio aem:spa-set-root -i IMS_TOKEN -h https://author.adobeaemcloud.com/ /content/wknd/us/en
 ```
 
 _See code: [src/commands/aem/spa/set-root.js](https://github.com/adobe/aio-cli-plugin-aem/blob/v1.0.5/src/commands/aem/spa/set-root.js)_
@@ -119,38 +128,41 @@ ARGUMENTS
   FILES_FOLDERS  Space-delimited list of files and folders to upload.
 
 OPTIONS
-  -c, --credential=credential  [default: admin:admin] AEM credential
-                               The username and password for authenticating with the
-                               target AEM instance. Should be in the format
-                               <username>:<password>.
+  -a, --access_token=access_token  User or service account access token
+                                   For authenticating with the target AEM instance.
 
-  -d, --deep                   Whether or not to perform
-                               a deep upload
+  -c, --credential=credential      [default: admin:admin] AEM credential
+                                   The username and password for authenticating with the
+                                   target AEM instance. Should be in the format
+                                   <username>:<password>.
 
-  -h, --host=host              [default: http://localhost:4502] AEM host
-                               The host value of the AEM instance where files will be
-                               uploaded. This should include everything in the host's
-                               URL up until /content/dam.
+  -d, --deep                       Whether or not to perform
+                                   a deep upload
 
-  -l, --log=log                [default: upload-${timestamp}.log] Log file path
-                               The local path to where the process's log messages
-                               should be saved.
+  -h, --host=host                  [default: http://localhost:4502] AEM host
+                                   The host value of the AEM instance where files will be
+                                   uploaded. This should include everything in the host's
+                                   URL up until /content/dam.
 
-  -o, --output=output          [default: result-${timestamp}.html] Result html file path
-                               The local path to where the process's metrics will be
-                               saved in html format.
+  -l, --log=log                    [default: upload-${timestamp}.log] Log file path
+                                   The local path to where the process's log messages
+                                   should be saved.
 
-  -r, --threads=threads        [default: 5] Maximum threads
-                               Maximum number of files to upload concurrently.
+  -o, --output=output              [default: result-${timestamp}.html] Result html file path
+                                   The local path to where the process's metrics will be
+                                   saved in html format.
 
-  -t, --target=target          [default: /content/dam/aem-upload-${timestamp}] Target AEM folder
-                               The folder in the target AEM instance where asset
-                               binaries should be uploaded. Should always begin with
-                               /content/dam.
+  -r, --threads=threads            [default: 5] Maximum threads
+                                   Maximum number of files to upload concurrently.
 
-  -v, --version                Show version
+  -t, --target=target              [default: /content/dam/aem-upload-${timestamp}] Target AEM folder
+                                   The folder in the target AEM instance where asset
+                                   binaries should be uploaded. Should always begin with
+                                   /content/dam.
 
-  --help                       Show help
+  -v, --version                    Show version
+
+  --help                           Show help
 
 DESCRIPTION
   Uploads one or more files to a target AEM instance. The upload process uses the
@@ -160,12 +172,10 @@ DESCRIPTION
   The process will upload the files or directories (non-recursive) provided in
   the command.
 
-  Note that the process will only work with AEM instances that use basic
-  (i.e. non-SSO) authentication.
-
 EXAMPLES
   $ aio aem:upload myimage.jpg
   $ aio aem:upload -h http://myaeminstance -c admin:12345 myimage.jpg
+  $ aio aem:upload -h http://myaeminstance -a myaccesstoken -t /content/dam/myassets myimage.jpg
 ```
 
 _See code: [src/commands/aem/upload.js](https://github.com/adobe/aio-cli-plugin-aem/blob/v1.0.5/src/commands/aem/upload.js)_
