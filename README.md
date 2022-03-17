@@ -64,12 +64,55 @@ aio-aem aem:COMMAND
 
 # Commands
 <!-- commands -->
+* [`aio-aem aem:spa:set-cors ENVIRONMENTID`](#aio-aem-aemspaset-cors-environmentid)
 * [`aio-aem aem:spa:set-root ROOT_PAGE`](#aio-aem-aemspaset-root-root_page)
 * [`aio-aem aem:upload FILES_FOLDERS`](#aio-aem-aemupload-files_folders)
 
+## `aio-aem aem:spa:set-cors ENVIRONMENTID`
+
+Updates the Cloudmanager configuration to apply
+
+```
+USAGE
+  $ aio-aem aem:spa:set-cors ENVIRONMENTID
+
+ARGUMENTS
+  ENVIRONMENTID  the environment id
+
+OPTIONS
+  -p, --programId=programId        the programId. if not specified, defaults to 'cloudmanager_programid' config value
+  -v, --version                    Show version
+  --help                           Show help
+  --imsContextName=imsContextName  the alternate IMS context name to use instead of aio-cli-plugin-cloudmanager
+
+  --strict                         performs strict validation of internal variables. Can also be enabled by setting
+                                   configuration property cloudmanager.environmentVariables.strictValidation to a truthy
+                                   value.
+
+DESCRIPTION
+  CORS settings to allow your SPA to be edited by AEM.
+
+  Please make sure to run the following commands beforehand:
+  aio auth:login
+  aio cloudmanager:org:select
+
+  This command will set the "AEM_SPA_REMOTE_HOSTNAME" variable in Cloudmanager
+  which can be used by the "com.adobe.granite.cors.impl.CORSPolicyImpl" OSGi 
+  configuration.
+
+ALIASES
+  $ aio-aem aem:spa:set-cors
+
+EXAMPLES
+  $ aio aem:spa:set-cors environmentId
+  $ aio aem:spa:set-cors -p programId environmentId
+```
+
+_See code: [src/commands/aem/spa/set-cors.js](https://github.com/adobe/aio-cli-plugin-aem/blob/v1.0.5/src/commands/aem/spa/set-cors.js)_
+
 ## `aio-aem aem:spa:set-root ROOT_PAGE`
 
-Configuration for AEM SPA Projects
+Updates the remote SPA configuration property of your AEM project to the 
 
 ```
 USAGE
@@ -92,7 +135,6 @@ OPTIONS
   --help                       Show help
 
 DESCRIPTION
-  Updates the remote SPA configuration property of your AEM project to the 
   location your SPA is deployed to. This will only work if you used aio to 
   bootstrap and deploy your SPA.
 
@@ -128,41 +170,41 @@ ARGUMENTS
   FILES_FOLDERS  Space-delimited list of files and folders to upload.
 
 OPTIONS
-  -a, --access_token=access_token  User or service account access token
-                                   For authenticating with the target AEM instance.
+  -c, --credential=credential  [default: admin:admin] AEM credential
+                               The username and password for authenticating with the
+                               target AEM instance. Should be in the format
+                               <username>:<password>.
 
-  -c, --credential=credential      [default: admin:admin] AEM credential
-                                   The username and password for authenticating with the
-                                   target AEM instance. Should be in the format
-                                   <username>:<password>.
+  -d, --deep                   Whether or not to perform
+                               a deep upload
 
-  -d, --deep                       Whether or not to perform
-                                   a deep upload
+  -h, --host=host              [default: http://localhost:4502] AEM host
+                               The host value of the AEM instance where files will be
+                               uploaded. This should include everything in the host's
+                               URL up until /content/dam.
 
-  -h, --host=host                  [default: http://localhost:4502] AEM host
-                                   The host value of the AEM instance where files will be
-                                   uploaded. This should include everything in the host's
-                                   URL up until /content/dam.
+  -i, --ims_token=ims_token    User or service account IMS access token
+                               For authenticating with the target AEM instance.
 
-  -l, --log=log                    [default: upload-${timestamp}.log] Log file path
-                                   The local path to where the process's log messages
-                                   should be saved.
+  -l, --log=log                [default: upload-${timestamp}.log] Log file path
+                               The local path to where the process's log messages
+                               should be saved.
 
-  -o, --output=output              [default: result-${timestamp}.html] Result html file path
-                                   The local path to where the process's metrics will be
-                                   saved in html format.
+  -o, --output=output          [default: result-${timestamp}.html] Result html file path
+                               The local path to where the process's metrics will be
+                               saved in html format.
 
-  -r, --threads=threads            [default: 5] Maximum threads
-                                   Maximum number of files to upload concurrently.
+  -r, --threads=threads        [default: 5] Maximum threads
+                               Maximum number of files to upload concurrently.
 
-  -t, --target=target              [default: /content/dam/aem-upload-${timestamp}] Target AEM folder
-                                   The folder in the target AEM instance where asset
-                                   binaries should be uploaded. Should always begin with
-                                   /content/dam.
+  -t, --target=target          [default: /content/dam/aem-upload-${timestamp}] Target AEM folder
+                               The folder in the target AEM instance where asset
+                               binaries should be uploaded. Should always begin with
+                               /content/dam.
 
-  -v, --version                    Show version
+  -v, --version                Show version
 
-  --help                           Show help
+  --help                       Show help
 
 DESCRIPTION
   Uploads one or more files to a target AEM instance. The upload process uses the
@@ -175,7 +217,7 @@ DESCRIPTION
 EXAMPLES
   $ aio aem:upload myimage.jpg
   $ aio aem:upload -h http://myaeminstance -c admin:12345 myimage.jpg
-  $ aio aem:upload -h http://myaeminstance -a myaccesstoken -t /content/dam/myassets myimage.jpg
+  $ aio aem:upload -h http://myaeminstance -i myimstoken -t /content/dam/myassets myimage.jpg
 ```
 
 _See code: [src/commands/aem/upload.js](https://github.com/adobe/aio-cli-plugin-aem/blob/v1.0.5/src/commands/aem/upload.js)_
