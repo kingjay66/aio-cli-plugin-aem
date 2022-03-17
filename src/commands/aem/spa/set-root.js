@@ -14,8 +14,8 @@
  ~ limitations under the License.
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+require('dotenv').config();
 const { flags } = require('@oclif/command');
-const GetUrlCommand = require('@adobe/aio-cli-plugin-app/src/commands/app/get-url');
 const axios = require('axios').default;
 
 const BaseCommand = require("../../../base-command");
@@ -28,8 +28,7 @@ class SetRootCommand extends BaseCommand {
         const ROOT_PATH = argv[0];
 
         // Get application url
-        const actions = await GetUrlCommand.run([]);
-        const url = actions.runtime.pages;
+        const url = `https://${process.env.AIO_runtime_namespace}.adobeio-static.net/api/v1/web/actions/pages`;
         this.log(`Deployed application is located at ${url}.`);
 
         // Define form payload based on SPA editor version

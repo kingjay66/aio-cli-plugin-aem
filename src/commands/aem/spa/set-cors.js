@@ -14,10 +14,10 @@
  ~ limitations under the License.
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+require('dotenv').config();
 const { flags } = require('@oclif/command');
 const commonFlags = require('@adobe/aio-cli-plugin-cloudmanager/src/common-flags');
 const commonArgs = require('@adobe/aio-cli-plugin-cloudmanager/src/common-args');
-const GetUrlCommand = require('@adobe/aio-cli-plugin-app/src/commands/app/get-url');
 const execSync = require('child_process').execSync;
 
 const BaseCommand = require("../../../base-command");
@@ -27,13 +27,9 @@ class SetCorsCommand extends BaseCommand {
         const { flags, argv } = args;
         const ENVIRONMENT_ID = argv[0];
 
-        // Get application url
-        const actions = await GetUrlCommand.run([]);
-        const url = actions.runtime.pages;
-        this.log(`Deployed application is located at ${url}.`);
-
-        // Convert url to hostname as required by CORS settings
-        const host = new URL(url).host;
+        // Get application host, as required by CORS settings
+        const host = `${process.env.AIO_runtime_namespace}.adobeio-static.net`;
+        this.log(`Deployed application is located at ${host}.`);
 
         // Run cloudmanager command to apply variable. Cannot run the command in code, because then it lacks some configuration context.
         const flagString = Object.entries(flags).map(([key, value]) => `--${key} ${value}`).join(' ');
