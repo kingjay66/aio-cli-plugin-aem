@@ -8,11 +8,11 @@
     "Mark Frisbey"
   ],
   "dependencies": {
-    "@adobe/aem-upload": "1.1.4",
+    "@adobe/aem-upload": "2.0.0",
     "@oclif/command": "^1",
     "@oclif/config": "^1.14.0",
     "@oclif/errors": "^1.1.2",
-    "axios": "^0.26.1",
+    "axios": "^1.7.8",
     "debug": "^4.1.0",
     "dotenv": "^16.0.0",
     "mustache": "^3.2.1",
