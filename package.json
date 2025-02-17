@@ -8,7 +8,7 @@
     "Mark Frisbey"
   ],
   "dependencies": {
-    "@adobe/aem-upload": "2.0.0",
+    "@adobe/aem-upload": "2.0.2",
     "@oclif/command": "^1",
     "@oclif/config": "^1.14.0",
     "@oclif/errors": "^1.1.2",
